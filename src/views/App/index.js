@@ -20,7 +20,7 @@ function App({ children, definitions }) {
         {children}
 
         <div className={s.footer}>
-          clan.report is made by{" "}
+          perktool is made by{" "}
           <a
             href="https://twitter.com/joshhunt"
             target="_blank"

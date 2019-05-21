@@ -1,17 +1,16 @@
-import React, { Component, Fragment } from 'react';
-import { Link } from 'react-router';
-import { get } from 'lodash';
-import { connect } from 'react-redux';
+import React, { Component, Fragment } from "react";
+import { Link } from "react-router";
+import { get } from "lodash";
+import { connect } from "react-redux";
 
-import { PlatformIcon } from 'src/components/Icon';
-import SearchForPlayer from 'src/components/SearchForPlayer';
+import { PlatformIcon } from "src/components/Icon";
 
-import destinyAuth from 'src/lib/destinyAuth';
-import { setAuth, getMembership } from 'src/store/auth';
+import destinyAuth from "src/lib/destinyAuth";
+import { setAuth, getMembership } from "src/store/auth";
 
-import s from './styles.styl';
+import s from "./styles.styl";
 
-const k = (...args) => args.join('|');
+const k = (...args) => args.join("|");
 
 const CLIENT_ID = process.env.REACT_APP_BUNGIE_CLIENT_ID;
 const AUTH_URL = `https://www.bungie.net/en/OAuth/Authorize?client_id=${CLIENT_ID}&response_type=code`;
@@ -43,7 +42,7 @@ class App extends Component {
                 <PlatformIcon
                   membershipType={ship.membershipType}
                   className={s.platformIcon}
-                />{' '}
+                />{" "}
                 {ship.displayName}
               </Link>
             ))}
@@ -55,8 +54,6 @@ class App extends Component {
             </a>
           </Fragment>
         )}
-
-        <SearchForPlayer className={s.playerSearch} />
       </div>
     );
   }
@@ -64,14 +61,17 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    memberships: get(state, 'auth.membership.destinyMemberships', []),
+    memberships: get(state, "auth.membership.destinyMemberships", []),
     isAuthenticated: state.auth.isAuthenticated
   };
 }
 
 const mapDispatchToActions = { setAuth, getMembership };
 
-export default connect(mapStateToProps, mapDispatchToActions)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToActions
+)(App);
 
 // function mapStateToProps(state) {
 //   return {

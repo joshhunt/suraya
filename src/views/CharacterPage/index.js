@@ -23,14 +23,6 @@ function CharacterPage({
 }) {
   return (
     <div>
-      <div>character {params.characterId}</div>
-
-      <br />
-      <br />
-      <Tooltip itemInstanceId="6917529093332868792" />
-      <br />
-      <br />
-
       <ItemPerkGrid
         data={perksWithItems}
         onItemSelect={addSelectedItemInstance}
