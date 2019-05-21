@@ -1,0 +1,104 @@
+.root
+  position: fixed
+  z-index: 999
+  background: rgba(#202124, .98)
+  backdrop-filter: blur(5px)
+  width: 350px
+  font-size: 14px
+  box-shadow: rgba(0, 0, 0, .2) 0 1px 2px 0, rgba(0, 0, 0, .1) 0 3px 6px 2px
+  font-family: 'nhg text'
+  overflow: auto
+  pointer-events: none
+
+.inlineRoot
+  composes: root
+  position: relative
+
+._bigText
+  font-weight: 500
+  letter-spacing: 1px
+  text-transform: uppercase
+
+.header
+  background: #4D3262
+  padding: 10px
+  display: flex
+  flex-wrap: wrap
+
+.name
+  composes: _bigText
+  flex: 1 0 100%
+  font-size: 22px
+  margin-bottom: 4px
+
+.type
+.rarity
+  flex: 1 1 auto
+
+.type
+  opacity: .8
+
+.rarity
+  text-align: right
+
+._sectionBase
+  padding: 10px
+  text-shadow: rgba(0, 0, 0, .5) 0 1px 2px 0
+
+  & + &
+    border-top: 1px solid rgba(white, .25)
+
+.powerSection
+  composes: _sectionBase
+  display: flex
+  align-items: center
+  text-transform: uppercase
+
+.power
+  composes: _bigText
+  font-weight: 600
+  font-size: 30px
+  margin-right: 10px
+
+.perksSection
+  composes: _sectionBase
+  padding-top: 0 // first perk already has padding
+
+.perkGroup
+  padding: 10px 0
+
+  & + &
+      border-top: 1px solid rgba(white, .25)
+
+.perk
+  display: flex
+  align-items: center
+  opacity: .5
+  font-size: 13px
+  letter-spacing: .2px
+
+.perkActive
+  opacity: 1
+
+.perkIcon
+  width: 20px
+  height: 20px
+  margin-right: 6px
+  opacity: .9
+
+.selectedPerkStar
+  color: #90CCC8
+  margin-right: 6px
+
+.highlightPerk
+  background: #90CCC8
+  color: #202124
+  padding: 2px 5px
+  border-radius: 3px
+  margin: 3px 0
+
+  &:last-of-type
+    margin-bottom: 0
+
+  .selectedPerkStar
+    display: none

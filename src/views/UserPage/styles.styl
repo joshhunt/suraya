@@ -1,0 +1,18 @@
+$sidebarWidth = 256px
+
+.root
+  display: flex
+
+.side
+  width: $sidebarWidth
+  position: fixed
+  top: 0
+  left: 0
+  overflow: auto
+  max-height: 100%
+  padding: 18px
+  box-sizing: content-box
+
+.main
+  flex: 1
+  margin-left: (30px + $sidebarWidth)

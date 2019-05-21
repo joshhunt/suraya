@@ -1,0 +1,51 @@
+_sizeFactor = .8
+
+_(base)
+  base * _sizeFactor
+
+.root
+  width: _(320px) // originally 320px
+  content: 'root'
+  position: relative
+  margin-bottom: _(15px)
+
+.bgImage
+  display block
+  width: 100%
+  height: auto
+
+.content
+  position: absolute
+  top: 0
+  left: _(60px)
+  right: _(8px)
+  bottom: 0
+  color: white
+  font-family: 'nhg display' !important
+  display: flex
+  justify-content: space-between
+
+.sub
+  text-align: right
+
+.charClass
+  font-size: _(20px)
+  margin-top: _(8px)
+  margin-bottom: _(7px)
+  line-height: 1
+
+.genderRace
+  opacity: .5
+  font-size: _(14px)
+  line-height: 1
+
+.light
+  color: #64D1CA
+  line-height: 1
+  margin-top: _(6px)
+  margin-bottom: _(5px)
+  font-size: _(27px)
+
+.level
+  line-height: 1
+  font-size: _(14px)

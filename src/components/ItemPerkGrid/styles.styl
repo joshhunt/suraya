@@ -1,0 +1,84 @@
+.root
+  content: 'hi'
+
+.tooltip
+  position: fixed
+  z-index: 999
+
+._rowBase
+  display: grid
+  grid-template-columns: 50px repeat(5, 1fr)
+  grid-gap: 10px
+  border-bottom: 1px solid rgba(white, 25%)
+
+._cellBase
+  padding: 5px
+
+  & + &
+    border-left: 1px solid rgba(white, 25%)
+
+.headerRow
+  composes: _rowBase
+
+.itemRow
+  composes: _rowBase
+
+.categoryCell
+  composes: _cellBase
+
+.itemsCell
+  composes: _cellBase
+
+.itemIcon
+  width: 40px
+  height: 40px
+  background: #28282B
+  border-radius: 3px
+  display: inline-block
+  position relative
+  z-index: 1
+
+
+.item
+  position relative
+  display: inline-block
+
+.isDupe
+  opacity: .25
+
+.itemBadge
+  background: #7FCEC9
+  color: #28282B
+  padding: 2px
+  z-index: 3
+  position absolute
+  top: -2px
+  right: -2px
+  font-size: 12px
+  width: 1.5em
+  height: 1.5em
+  border-radius: 50%
+  display: flex
+  align-items: center
+  justify-content: center
+  box-shadow: rgba(0, 0, 0, .1) 0 1px 2px 0, rgba(0, 0, 0, .05) 0 3px 6px 2px
+
+.selectedBadge
+  composes: itemBadge
+  right: initial
+  left: -2px
+  background: #4cd137
+
+.iconWrapper
+  position relative
+  font-size: 0
+  display: inline-block
+  margin: 5px
+
+.masterworkOverlay
+  position absolute
+  display: block
+  top: 0
+  left: 0
+  z-index: 2
+  height: 100%
