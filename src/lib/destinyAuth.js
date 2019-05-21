@@ -19,12 +19,6 @@ if (isAuthRefreshiFrame && window.parent.__recieveNewCodeFromIframe) {
     logiFrame("Authorisation code present in URL in iframe", queryParams.code);
     logiFrame("Passing to __recieveNewCodeFromIframe");
 
-    if (window.location.href.includes("perktool.destinysets.com")) {
-      console.log("Pausing to print out auth code");
-      console.log("https://localhost:4014/?code=" + queryParams.code);
-      debugger;
-    }
-
     window.parent.__recieveNewCodeFromIframe(queryParams.code);
   }
 }
@@ -153,6 +147,12 @@ export default function destinyAuth(_cb) {
       "Authorisation code present in URL, requesting new acceess code",
       queryParams.code
     );
+
+    if (window.location.href.includes("perktool.destinysets.com")) {
+      console.log("Pausing to print out auth code");
+      console.log("https://localhost:4014/?code=" + queryParams.code);
+      debugger;
+    }
 
     requestNewAccessToken(queryParams.code)
       .then(handleNewAuthData)
