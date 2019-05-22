@@ -76,7 +76,7 @@ class UserPage extends Component {
             />
           </div>
         </div>
-
+        <div className={s.sidebarSpacer} />
         <div className={s.main}>{children}</div>
       </div>
     );

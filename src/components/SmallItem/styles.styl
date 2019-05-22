@@ -1,0 +1,57 @@
+.item
+  position relative
+  display: inline-block
+
+.isDupe
+  opacity: .25
+
+.itemBadge
+  background: #7FCEC9
+  color: #28282B
+  padding: 2px
+  z-index: 3
+  position absolute
+  top: -2px
+  right: -2px
+  font-size: 10px
+  width: 1.5em
+  height: 1.5em
+  border-radius: 50%
+  display: flex
+  align-items: center
+  justify-content: center
+  box-shadow: rgba(0, 0, 0, .1) 0 1px 2px 0, rgba(0, 0, 0, .05) 0 3px 6px 2px
+
+  .number
+    position: relative
+    top: -1px
+
+.selectedBadge
+  composes: itemBadge
+  font-size: 12px
+  right: initial
+  left: -2px
+  background: #4cd137
+
+.iconWrapper
+  position relative
+  font-size: 0
+  display: inline-block
+  margin: 5px
+
+.masterworkOverlay
+  position absolute
+  display: block
+  top: 0
+  left: 0
+  z-index: 2
+  height: 100%
+
+.itemIcon
+  width: 40px
+  height: 40px
+  background: #28282B
+  border-radius: 3px
+  display: inline-block
+  position relative
+  z-index: 1

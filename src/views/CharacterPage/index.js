@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { flow, sortBy, filter, groupBy, uniq, map } from "lodash/fp";
 import { connect } from "react-redux";
 
-import * as perkActions from "src/store/perkTool";
-import ItemPerkGrid from "src/components/ItemPerkGrid";
-import Tooltip from "src/components/Tooltip";
 import { HELMET, ARMS, CHEST, LEGS, CLASS_ITEM } from "src/lib/destinyEnums";
 import getItemsFromProfile from "src/lib/getItemsFromProfile";
+import { useDefinitions } from "src/definitionsContext";
+
+import * as perkActions from "src/store/perkTool";
+import ItemPerkGrid from "src/components/ItemPerkGrid";
+import ItemComparison from "src/components/ItemComparison";
+import Tooltip from "src/components/Tooltip";
 
 // import s from "./styles.styl";
 
@@ -15,16 +18,53 @@ const k = ({ membershipType, membershipId }) =>
 
 function CharacterPage({
   params,
+  itemsByCategory,
   perksWithItems,
   addSelectedItemInstance,
   removeSelectedItemInstance,
   selectedItems,
   selectedItemHashes
 }) {
+  const itemDefs = useDefinitions("InventoryItem");
+  const [activeTooltip, setActiveTooltip] = useState();
+
+  const tooltipItemDef =
+    activeTooltip &&
+    activeTooltip.itemWrapper &&
+    itemDefs[activeTooltip.itemWrapper.instance.itemHash];
+
+  function onTooltip(ev, itemWrapper) {
+    const x = ev && ev.clientX + 5;
+    const y = ev && ev.clientY + 5;
+    ev && itemWrapper
+      ? setActiveTooltip({ itemWrapper, x, y })
+      : setActiveTooltip(null);
+  }
+
   return (
     <div>
+      {tooltipItemDef && (
+        <Tooltip
+          top={activeTooltip.y}
+          left={activeTooltip.x}
+          itemInstanceId={activeTooltip.itemWrapper.instance.itemInstanceId}
+          itemHash={tooltipItemDef.hash}
+        />
+      )}
+
       <ItemPerkGrid
+        onTooltip={onTooltip}
         data={perksWithItems}
+        onItemSelect={addSelectedItemInstance}
+        onItemDeselect={removeSelectedItemInstance}
+        selectedItems={selectedItems}
+        selectedItemHashes={selectedItemHashes}
+      />
+      <br />
+      <br />
+      <ItemComparison
+        onTooltip={onTooltip}
+        data={itemsByCategory}
         onItemSelect={addSelectedItemInstance}
         onItemDeselect={removeSelectedItemInstance}
         selectedItems={selectedItems}
@@ -53,33 +93,29 @@ const mapStateToProps = (state, ownProps) => {
         .map(item => {
           const socketData =
             profile.itemComponents.sockets.data[item.itemInstanceId];
-          const sockets = socketData && socketData.sockets;
+          const sockets = (socketData && socketData.sockets) || [];
 
-          let matches = false;
-          const matchedPerks = [];
-          const perks = [];
-          sockets &&
-            sockets.forEach(socket => {
-              socket.reusablePlugHashes &&
-                socket.reusablePlugHashes.forEach(plugHash => {
-                  perks.push(plugHash);
+          const perks = sockets.reduce((acc, socket) => {
+            return uniq([
+              socket.plugHash,
+              ...acc,
+              ...(socket.reusablePlugHashes || [])
+            ]);
+          }, []);
 
-                  if (selectedPerks.includes(plugHash)) {
-                    matches = true;
-                    matchedPerks.push(plugHash);
-                  }
-                });
-            });
+          const matchedPerks = perks.filter(perk =>
+            selectedPerks.includes(perk)
+          );
 
           return {
             instance: item,
-            matches,
+            matches: matchedPerks.length > 0,
             matchedPerks,
             perks,
             sockets
           };
-        })
-        .filter(itemWrapper => itemWrapper.matches);
+        });
+  // .filter(itemWrapper => itemWrapper.matches);
 
   const selectedItemHashes = flow(
     map(instanceId =>
