@@ -37,8 +37,23 @@ export default function ItemComparison({
     ])
   )(data);
 
+  function autoMark() {
+    const singles = mappedData.reduce((acc, [_, itemsOfCategory]) => {
+      return itemsOfCategory.reduce((acc2, itemDupes) => {
+        if (itemDupes.length === 1) {
+          return [...acc2, itemDupes[0].instance.itemInstanceId];
+        }
+
+        return acc2;
+      }, acc);
+    }, []);
+
+    onItemSelect(singles);
+  }
+
   return (
     <div>
+      <button onClick={autoMark}>auto mark all non-dupes</button>
       {mappedData.map(([itemCategoryHash, itemGroups]) => {
         const catDef = categoryDefs[itemCategoryHash];
 

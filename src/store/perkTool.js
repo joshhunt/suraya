@@ -1,4 +1,4 @@
-import { uniq } from "lodash";
+import { uniq, isArray } from "lodash";
 
 const INITIAL_STATE = {
   selectedPerks: [],
@@ -11,7 +11,8 @@ const REMOVE_SELECTED_PERK = "Remove selected perk";
 const ADD_SELECTED_ITEM = "Add selected item";
 const REMOVE_SELECTED_ITEM = "Remove selected item";
 
-const add = (existing, item) => uniq([...existing, item]);
+const asArray = item => (isArray(item) ? item : [item]);
+const add = (existing, item) => uniq([...existing, ...asArray(item)]);
 const remove = (existing, item) => existing.filter(i => i !== item);
 
 export default function perkToolReducer(
