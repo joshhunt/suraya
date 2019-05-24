@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import cx from "classnames";
 
 import Icon from "src/components/Icon";
@@ -9,6 +9,8 @@ import masterworkOutline from "src/masterwork-outline.png";
 import { MASTERWORK_FLAG } from "app/lib/destinyEnums";
 
 import s from "./styles.styl";
+
+const TOUCH_HOLD_TIMEOUT = 200;
 
 export default function Item({
   itemWrapper,
@@ -21,12 +23,55 @@ export default function Item({
   isDupe,
   matchedPerksThreshold
 }) {
+  const isTouching = useRef(null);
+  const touchTimeoutId = useRef(null);
+
+  function onTouchStart(ev) {
+    ev.preventDefault();
+    isTouching.current = true;
+
+    touchTimeoutId.current = setTimeout(() => {
+      touchTimeoutId.current = null;
+      onClick();
+    }, TOUCH_HOLD_TIMEOUT);
+  }
+
+  function onTouchEnd(ev) {
+    if (touchTimeoutId.current) {
+      clearTimeout(touchTimeoutId.current);
+      touchTimeoutId.current = null;
+      const { x, y } = ev.target.getBoundingClientRect();
+      onTooltipEnter({ clientX: x, clientY: y });
+    }
+  }
+
+  function onMouseMove(ev) {
+    if (isTouching.current) {
+      return;
+    }
+    onTooltipEnter(ev);
+  }
+
+  function onMouseLeave(ev) {
+    onTooltipLeave(ev);
+  }
+
+  function _onClick(ev) {
+    if (isTouching.current) {
+      return;
+    }
+
+    onClick(ev);
+  }
+
   return (
     <div
       className={cx(s.item, isDupe && s.isDupe)}
-      onMouseMove={onTooltipEnter}
-      onMouseLeave={onTooltipLeave}
-      onClick={onClick}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      onClick={_onClick}
     >
       {itemWrapper &&
         itemWrapper.matchedPerks.length >= (matchedPerksThreshold || 2) && (
