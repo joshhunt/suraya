@@ -1,6 +1,7 @@
-import React, { useRef, useMemo, useState } from "react";
+import React, { useRef } from "react";
 import cx from "classnames";
 import { get } from "lodash";
+import { flow, keyBy, mapValues, map } from "lodash/fp";
 import { connect } from "react-redux";
 import useWindowSize from "src/lib/hooks/useWindowSize";
 import useComponentSize from "src/lib/hooks/useComponentSize";
@@ -19,6 +20,7 @@ function Tooltip({
   itemInstance,
   sockets,
   selectedPerks,
+  selectedPerksData,
   top: _top,
   left: _left
 }) {
@@ -67,6 +69,8 @@ function Tooltip({
           return (
             <div className={s.perkGroup}>
               {perks.map(perk => {
+                const matchedItems = selectedPerksData[perk.hash];
+
                 return (
                   perk.plugItemDef && (
                     <div
@@ -81,14 +85,30 @@ function Tooltip({
                         className={s.perkIcon}
                         src={perk.plugItemDef.displayProperties.icon}
                       />
-                      {selectedPerks.includes(perk.plugItemDef.hash) && (
-                        <Icon
-                          className={s.selectedPerkStar}
-                          name="star"
-                          solid
-                        />
+
+                      <span className={s.perkName}>
+                        {perk.plugItemDef.displayProperties.name}
+                      </span>
+
+                      {matchedItems && matchedItems.selected > 0 && (
+                        <span className={s.selectedItems}>
+                          <Icon className={s.selectedPerkStar} name="check" />
+                          {" ⨉ "}
+                          {matchedItems.selected}
+                        </span>
                       )}
-                      {perk.plugItemDef.displayProperties.name}
+
+                      {matchedItems && matchedItems.total > 0 && (
+                        <span className={s.matchedItems}>
+                          <Icon
+                            className={s.selectedPerkStar}
+                            name="star"
+                            solid
+                          />
+                          {" ⨉ "}
+                          {matchedItems.total}
+                        </span>
+                      )}
                     </div>
                   )
                 );
@@ -104,8 +124,26 @@ function Tooltip({
 const k = ({ membershipType, membershipId }) =>
   [membershipType, membershipId].join("/");
 
+function doesSocketsHavePerk(sockets, perkHash) {
+  return sockets.find(socket => {
+    if (socket.plugHash === perkHash) {
+      return true;
+    }
+
+    if (
+      socket.reusablePlugHashes &&
+      socket.reusablePlugHashes.includes(perkHash)
+    ) {
+      return true;
+    }
+
+    return false;
+  });
+}
+
 function mapStateToProps(state, ownProps) {
   const { itemInstanceId } = ownProps;
+  const { selectedPerks, selectedItems } = state.perkTool;
 
   const pKey =
     state.profiles.$activeProfile && k(state.profiles.$activeProfile);
@@ -140,14 +178,61 @@ function mapStateToProps(state, ownProps) {
       const plugs = socket.reusablePlugHashes || [socket.plugHash];
 
       return plugs.map(plugHash => ({
+        hash: plugHash,
         plugItemDef: itemDefs[plugHash],
         isActive: plugHash === socket.plugHash
       }));
     });
 
+  const relevantItems = items.filter(item => {
+    const thisItemDef = itemDefs[item.itemHash];
+
+    if (
+      !thisItemDef ||
+      thisItemDef.classType !== window.__HACKY_CURRENT_CLASS_TYPE ||
+      thisItemDef.itemSubType !== itemDef.itemSubType
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+
+  const selectedPerksData = flow(
+    map(selectedPerkHash => {
+      const result = { total: 0, selected: 0 };
+
+      relevantItems.forEach(item => {
+        const socketData =
+          profile.itemComponents.sockets.data[item.itemInstanceId] || {};
+        const sockets = socketData.sockets || [];
+
+        const itemHasPerk = doesSocketsHavePerk(sockets, selectedPerkHash);
+
+        if (itemHasPerk) {
+          result.total += 1;
+
+          if (selectedItems.includes(item.itemInstanceId)) {
+            result.selected += 1;
+          }
+        }
+      });
+
+      return {
+        perkHash: selectedPerkHash,
+        ...result
+      };
+    }),
+    keyBy("perkHash")
+    // mapValues(g => g.matchedItems)
+  )(selectedPerks);
+
+  console.log("selectedPerksData:", selectedPerksData);
+
   return {
     item: itemDef,
-    selectedPerks: state.perkTool.selectedPerks,
+    selectedPerks,
+    selectedPerksData,
     itemSummary,
     itemInstance,
     sockets

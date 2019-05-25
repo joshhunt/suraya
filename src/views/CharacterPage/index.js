@@ -51,7 +51,6 @@ function CharacterPage({
           itemHash={tooltipItemDef.hash}
         />
       )}
-
       <ItemPerkGrid
         onTooltip={onTooltip}
         data={perksWithItems}
@@ -70,6 +69,10 @@ function CharacterPage({
         selectedItems={selectedItems}
         selectedItemHashes={selectedItemHashes}
       />
+      <br />
+      <br />
+      selected items:
+      <input value={selectedItems.map(id => `id:${id}`).join(" or ")} />
     </div>
   );
 }
@@ -82,6 +85,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const thisCharacter =
     profile && profile.characters.data[ownProps.params.characterId];
+
+  window.__HACKY_CURRENT_CLASS_TYPE = thisCharacter && thisCharacter.classType;
 
   const items = !profile
     ? []
@@ -115,7 +120,6 @@ const mapStateToProps = (state, ownProps) => {
             sockets
           };
         });
-  // .filter(itemWrapper => itemWrapper.matches);
 
   const selectedItemHashes = flow(
     map(instanceId =>

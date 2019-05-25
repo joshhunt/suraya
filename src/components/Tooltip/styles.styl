@@ -78,6 +78,9 @@
   font-size: 13px
   letter-spacing: .2px
 
+  & + &
+    margin-top: 2px
+
 .perkActive
   opacity: 1
 
@@ -87,19 +90,37 @@
   margin-right: 6px
   opacity: .9
 
-.selectedPerkStar
-  color: #90CCC8
-  margin-right: 6px
+.perkName
+  flex: 1
 
-.highlightPerk
+.selectedPerkStar
+  margin-right: 0
+
+// .highlightPerk
+//   background: #90CCC8
+//   color: #202124
+//   padding: 2px 5px
+//   border-radius: 3px
+//   margin: 3px 0
+
+//   &:last-of-type
+//     margin-bottom: 0
+
+//   .selectedPerkStar
+//     display: none
+
+
+.matchedItems
   background: #90CCC8
   color: #202124
-  padding: 2px 5px
+  justify-self: flex-end
+  font-size: .9em
+  padding: 2px
   border-radius: 3px
-  margin: 3px 0
 
-  &:last-of-type
-    margin-bottom: 0
+  & + &
+    margin-left: .5em
 
-  .selectedPerkStar
-    display: none
+.selectedItems
+  composes: matchedItems
+  background: #74CC51

@@ -32,7 +32,7 @@ export default function Item({
 
     touchTimeoutId.current = setTimeout(() => {
       touchTimeoutId.current = null;
-      onClick();
+      onClick && onClick();
     }, TOUCH_HOLD_TIMEOUT);
   }
 
@@ -41,7 +41,7 @@ export default function Item({
       clearTimeout(touchTimeoutId.current);
       touchTimeoutId.current = null;
       const { x, y } = ev.target.getBoundingClientRect();
-      onTooltipEnter({ clientX: x, clientY: y });
+      onTooltipEnter && onTooltipEnter({ clientX: x, clientY: y });
     }
   }
 
@@ -49,11 +49,12 @@ export default function Item({
     if (isTouching.current) {
       return;
     }
-    onTooltipEnter(ev);
+
+    onTooltipEnter && onTooltipEnter(ev);
   }
 
   function onMouseLeave(ev) {
-    onTooltipLeave(ev);
+    onTooltipLeave && onTooltipLeave(ev);
   }
 
   function _onClick(ev) {
@@ -61,7 +62,7 @@ export default function Item({
       return;
     }
 
-    onClick(ev);
+    onClick && onClick(ev);
   }
 
   return (
