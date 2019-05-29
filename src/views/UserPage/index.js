@@ -59,7 +59,7 @@ class UserPage extends Component {
                   key={character.characterId}
                   to={`/${membershipType}/${membershipId}/${
                     character.characterId
-                  }`}
+                  }/perks`}
                 >
                   <Character character={character} />
                 </Link>

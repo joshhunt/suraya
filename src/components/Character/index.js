@@ -8,7 +8,7 @@ import s from "./styles.styl";
 const name = def => def && def.displayProperties.name;
 
 export default function Character({ character }) {
-  const subclassDef = useDefinitions("Class", character.classHash);
+  const classDef = useDefinitions("Class", character.classHash);
   const genderDef = useDefinitions("Gender", character.genderHash);
   const raceDef = useDefinitions("Race", character.raceHash);
 
@@ -17,7 +17,7 @@ export default function Character({ character }) {
       <BungieImage className={s.bgImage} src={character.emblemBackgroundPath} />
       <div className={s.content}>
         <div className={s.main}>
-          <div className={s.charClass}>{name(subclassDef)}</div>
+          <div className={s.charClass}>{name(classDef)}</div>
           <div className={s.genderRace}>
             {name(raceDef)} {name(genderDef)}
           </div>

@@ -41,7 +41,7 @@ export default function ItemPerkGrid({
         {data.map(perkData => {
           const perkDef = itemDefs[perkData.perkHash];
           return (
-            <div className={s.itemRow}>
+            <div key={perkData.perkHash} className={s.itemRow}>
               <div className={s.perkCell}>
                 {perkDef && <Item item={perkDef} />}
               </div>

@@ -2,6 +2,11 @@ $sidebarWidth = 256px
 
 .root
   display: flex
+  min-height: calc(93vh - 55px)
+
+  @media screen and (max-width: 1000px)
+    min-height: initial
+    display: block
 
 .side
   width: $sidebarWidth
@@ -13,10 +18,16 @@ $sidebarWidth = 256px
   padding: 18px
   box-sizing: content-box
 
+  @media screen and (max-width: 1000px)
+    position relative
+
 .sidebarSpacer
   width: $sidebarWidth
   height: 10px
 
+  @media screen and (max-width: 1000px)
+    display: none
+
 .main
   flex: 1
-  margin-left: (30px)
+  margin-left: 30px

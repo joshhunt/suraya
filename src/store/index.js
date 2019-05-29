@@ -17,6 +17,8 @@ import definitions, {
 
 import { fasterGetDefinitions } from "app/lib/definitions";
 
+// TODO: https://github.com/rt2zz/redux-persist-crosstab
+
 const persistConfig = {
   key: "perkTool",
   whitelist: ["selectedPerks", "selectedItems"],

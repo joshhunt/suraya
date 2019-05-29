@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { flow, sortBy, filter, groupBy, uniq, map } from "lodash/fp";
 import { connect } from "react-redux";
+import { Link } from "react-router";
 
 import { HELMET, ARMS, CHEST, LEGS, CLASS_ITEM } from "src/lib/destinyEnums";
 import getItemsFromProfile from "src/lib/getItemsFromProfile";
@@ -9,24 +10,90 @@ import { useDefinitions } from "src/definitionsContext";
 import * as perkActions from "src/store/perkTool";
 import ItemPerkGrid from "src/components/ItemPerkGrid";
 import ItemComparison from "src/components/ItemComparison";
+import TransferThingy from "src/components/TransferThingy";
 import Tooltip from "src/components/Tooltip";
 
-// import s from "./styles.styl";
+import s from "./styles.styl";
+
+export const PERKS = "perks";
+export const DUPLICATES = "duplicates";
+export const RESULTS = "results";
+
+const STEPS = [PERKS, DUPLICATES, RESULTS];
 
 const k = ({ membershipType, membershipId }) =>
   [membershipType, membershipId].join("/");
 
-function CharacterPage({
+function View({
+  mode,
+  props: {
+    onTooltip,
+    perksWithItems,
+    addSelectedItemInstance,
+    removeSelectedItemInstance,
+    selectedItems,
+    itemsByCategory,
+    selectedItemHashes,
+    pKey
+  }
+}) {
+  switch (mode) {
+    case PERKS:
+      return (
+        <ItemPerkGrid
+          onTooltip={onTooltip}
+          data={perksWithItems}
+          onItemSelect={addSelectedItemInstance}
+          onItemDeselect={removeSelectedItemInstance}
+          selectedItems={selectedItems}
+          selectedItemHashes={selectedItemHashes}
+        />
+      );
+
+    case DUPLICATES:
+      return (
+        <ItemComparison
+          onTooltip={onTooltip}
+          data={itemsByCategory}
+          onItemSelect={addSelectedItemInstance}
+          onItemDeselect={removeSelectedItemInstance}
+          selectedItems={selectedItems}
+          selectedItemHashes={selectedItemHashes}
+        />
+      );
+
+    case RESULTS:
+      return (
+        <div>
+          <TransferThingy pKey={pKey} />
+          <br />
+          selected items:
+          <input
+            value={selectedItems.map(id => `id:${id}`).join(" or ")}
+            readOnly
+          />
+        </div>
+      );
+
+    default:
+      return <div>idk what the mode is lol: {mode}</div>;
+  }
+}
+
+function Triage({
   params,
   itemsByCategory,
   perksWithItems,
   addSelectedItemInstance,
   removeSelectedItemInstance,
   selectedItems,
-  selectedItemHashes
+  selectedItemHashes,
+  pKey,
+  route: { mode }
 }) {
   const itemDefs = useDefinitions("InventoryItem");
   const [activeTooltip, setActiveTooltip] = useState();
+  const { membershipType, membershipId, characterId } = params;
 
   const tooltipItemDef =
     activeTooltip &&
@@ -51,28 +118,31 @@ function CharacterPage({
           itemHash={tooltipItemDef.hash}
         />
       )}
-      <ItemPerkGrid
-        onTooltip={onTooltip}
-        data={perksWithItems}
-        onItemSelect={addSelectedItemInstance}
-        onItemDeselect={removeSelectedItemInstance}
-        selectedItems={selectedItems}
-        selectedItemHashes={selectedItemHashes}
+
+      <div className={s.stepper}>
+        {STEPS.map(step => (
+          <Link
+            className={mode === step ? s.activeStep : s.step}
+            to={`/${membershipType}/${membershipId}/${characterId}/${step}`}
+          >
+            {step}
+          </Link>
+        ))}
+      </div>
+
+      <View
+        mode={mode}
+        props={{
+          onTooltip,
+          perksWithItems,
+          addSelectedItemInstance,
+          removeSelectedItemInstance,
+          selectedItems,
+          itemsByCategory,
+          selectedItemHashes,
+          pKey
+        }}
       />
-      <br />
-      <br />
-      <ItemComparison
-        onTooltip={onTooltip}
-        data={itemsByCategory}
-        onItemSelect={addSelectedItemInstance}
-        onItemDeselect={removeSelectedItemInstance}
-        selectedItems={selectedItems}
-        selectedItemHashes={selectedItemHashes}
-      />
-      <br />
-      <br />
-      selected items:
-      <input value={selectedItems.map(id => `id:${id}`).join(" or ")} />
     </div>
   );
 }
@@ -146,6 +216,7 @@ const mapStateToProps = (state, ownProps) => {
   const itemsByCategory = flow(groupItemByCategory)(items);
 
   return {
+    pKey,
     selectedPerks,
     selectedItems,
     selectedItemHashes,
@@ -178,4 +249,4 @@ const mapDispatchToActions = {
 export default connect(
   mapStateToProps,
   mapDispatchToActions
-)(CharacterPage);
+)(Triage);
