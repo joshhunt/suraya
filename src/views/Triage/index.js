@@ -15,9 +15,9 @@ import Tooltip from "src/components/Tooltip";
 
 import s from "./styles.styl";
 
-export const PERKS = "perks";
-export const DUPLICATES = "duplicates";
-export const RESULTS = "results";
+export const PERKS = "Perks";
+export const DUPLICATES = "Duplicates";
+export const RESULTS = "Results";
 
 const STEPS = [PERKS, DUPLICATES, RESULTS];
 
@@ -120,12 +120,13 @@ function Triage({
       )}
 
       <div className={s.stepper}>
-        {STEPS.map(step => (
+        {STEPS.map((step, index) => (
           <Link
+            key={step}
             className={mode === step ? s.activeStep : s.step}
             to={`/${membershipType}/${membershipId}/${characterId}/${step}`}
           >
-            {step}
+            {index + 1}. {step}
           </Link>
         ))}
       </div>

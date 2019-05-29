@@ -18,20 +18,20 @@ export default class AppRouter extends Component {
           <Route component={App}>
             <Route path="/" component={Home} />
             <Route path="/:membershipType/:membershipId" component={UserPage}>
-              <Route path=":characterId" mode="perks" component={Triage} />
+              <Route path=":characterId" mode={PERKS} component={Triage} />
               <Route
                 path=":characterId/perks"
-                mode="perks"
+                mode={PERKS}
                 component={Triage}
               />
               <Route
                 path=":characterId/duplicates"
-                mode="duplicates"
+                mode={DUPLICATES}
                 component={Triage}
               />
               <Route
                 path=":characterId/results"
-                mode="results"
+                mode={RESULTS}
                 component={Triage}
               />
             </Route>
