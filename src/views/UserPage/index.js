@@ -23,6 +23,10 @@ function UserPage({
   selectedPerks,
   addSelectedPerk,
   removeSelectedPerk,
+  setActiveProfile,
+  setAuth,
+  getProfile,
+  getMembership,
   routeParams: { membershipId, membershipType }
 }) {
   useEffect(() => {
