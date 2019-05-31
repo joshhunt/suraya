@@ -14,6 +14,7 @@ library.add(
   require("@fortawesome/pro-solid-svg-icons/faStar").faStar,
 
   require("@fortawesome/pro-regular-svg-icons/faPlus").faPlus,
+  require("@fortawesome/pro-regular-svg-icons/faSpinnerThird").faSpinnerThird,
   require("@fortawesome/pro-regular-svg-icons/faEye").faEye,
   require("@fortawesome/pro-regular-svg-icons/faEyeSlash").faEyeSlash,
   require("@fortawesome/pro-regular-svg-icons/faSync").faSync,

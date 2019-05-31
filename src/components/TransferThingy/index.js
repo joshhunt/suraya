@@ -10,72 +10,31 @@ import HeadingWithTransfers from "src/components/HeadingWithTransfers";
 
 import s from "./styles.styl";
 
-const ITEM_COUNT = 50;
-
 function TransferThingy({
   keepItems,
   junkItems,
   selectedItems,
   profile,
-  activeProfile,
   accessToken,
+  activeProfile,
   onTooltip,
   selectedItemHashes,
   onItemDeselect,
   onItemSelect
 }) {
-  const allDefs = useDefinitions();
   const itemDefs = useDefinitions("InventoryItem");
-  const classDefs = useDefinitions("Class");
-
-  const items = []; // TODO: remove this when we update item transfering
-
-  function transfer(item, destination) {
-    transferItem(
-      item,
-      destination,
-      profile,
-      allDefs,
-      activeProfile,
-      accessToken
-    ).catch(err => {
-      console.error("Error transferring", err);
-    });
-  }
-
-  async function transferMultiple() {
-    const _itemsToTransfer = items;
-    const itemsToTransfer = sortBy(_itemsToTransfer, i => i.itemInstanceId);
-    const ids = itemsToTransfer.map(i => i.itemInstanceId);
-    console.log("Going to transfer these items", itemsToTransfer);
-
-    const TRANSFER_TO = "2305843009269703481";
-    for (let index = 0; index < itemsToTransfer.length; index++) {
-      const item = itemsToTransfer[index];
-      console.log("%cgoing to transfer", "font-weight: bold;", item);
-      try {
-        await transferItem(
-          item,
-          TRANSFER_TO,
-          profile,
-          allDefs,
-          accessToken,
-          ids
-        );
-        console.log("%csuccess!", "font-weight: bold; color: green");
-      } catch (err) {
-        console.groupEnd();
-        console.log("%cerror!", "font-weight: bold; color: red", err.message);
-      }
-    }
-  }
 
   return (
     <div>
       <div className={s.groups}>
         <div className={s.itemGroup}>
-          <HeadingWithTransfers profile={profile}>
-            Keep Items
+          <HeadingWithTransfers
+            profile={profile}
+            items={keepItems}
+            accessToken={accessToken}
+            activeProfile={activeProfile}
+          >
+            Tagged items
           </HeadingWithTransfers>
 
           <DupeItemList
@@ -90,7 +49,14 @@ function TransferThingy({
         </div>
 
         <div className={s.itemGroup}>
-          <h2>junk items</h2>
+          <HeadingWithTransfers
+            profile={profile}
+            items={junkItems}
+            accessToken={accessToken}
+            activeProfile={activeProfile}
+          >
+            Everything else
+          </HeadingWithTransfers>
 
           <DupeItemList
             items={junkItems}

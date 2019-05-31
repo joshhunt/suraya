@@ -58,12 +58,15 @@ export default function DupeItemList({
         }
 
         return (
-          <div className={s.category}>
+          <div className={s.category} key={itemCategoryHash}>
             <h3>{catDef.displayProperties.name}</h3>
 
             <div className={s.items}>
               {dupes.map(itemList => (
-                <div className={s.dupeGroup}>
+                <div
+                  className={s.dupeGroup}
+                  key={itemList[0].instance.itemHash}
+                >
                   {itemList.map(itemWrapper => {
                     const { itemInstanceId, itemHash } = itemWrapper.instance;
                     const itemDef = itemDefs[itemHash];

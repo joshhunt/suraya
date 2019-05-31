@@ -27,10 +27,16 @@
     top: _triangle * -2
     right: 20px
 
-// .drawerTitle
-//   flex: 0 0 100%
+.drawerTitle
+  display: flex
+  justify-content: space-between
+
+.transferring
+  font-size: 14px
+  opacity: .75
 
 .transferCharacter
+  cursor: pointer
   position relative
   display: block
   background: darken(#1F2023, 40%)
@@ -44,6 +50,12 @@
   overflow hidden
   color: white
   font-family: 'nhg display' !important
+  transition: 150ms ease-in-out opacity
+  will-change: opacity
+
+  &:disabled
+    pointer-events: none
+    opacity: .5
 
 .transferButtonInner
   display: flex
