@@ -235,4 +235,12 @@ export function transferItem(transferRequest, accessToken) {
   );
 }
 
+export function equipItem(equipRequest, accessToken) {
+  return getDestiny(
+    "/Destiny2/Actions/Items/EquipItem/",
+    { accessToken },
+    equipRequest
+  );
+}
+
 window.getCacheablePGCRDetails = getCacheablePGCRDetails;

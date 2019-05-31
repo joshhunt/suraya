@@ -1,4 +1,5 @@
 import * as destiny from "src/lib/destiny";
+import { isFunction } from "lodash";
 
 const profileStateMap = new WeakMap();
 
@@ -7,6 +8,8 @@ export const VAULT = "$$vault";
 const SUBBUCKET_ITEMS = "items";
 const SUBBUCKET_EQUIPPED = "equipped";
 const VAULT_BUCKET_HASH = 138197802;
+
+const EXOTIC = 2759499571;
 
 const IS_PROFILE_STATE = Symbol("is profileState");
 
@@ -63,12 +66,20 @@ function findMap(arr, fn) {
   }
 }
 
-function findItemLocation(profileState, itemId) {
+function findItemLocation(profileState, arg2) {
+  const itemTest = isFunction(arg2)
+    ? arg2
+    : item => item.itemInstanceId === arg2;
+
   return findMap(Object.entries(profileState), ([character, buckets]) => {
     return findMap(Object.entries(buckets), ([bucketHash, bucket]) => {
       return findMap(Object.entries(bucket), ([subBucket, items]) => {
-        const found = items.find(item => item.itemInstanceId === itemId);
-        return found ? [character, bucketHash, subBucket] : null;
+        const found = items.find(i =>
+          itemTest(i, character, bucketHash, subBucket)
+        );
+        return found
+          ? [character, bucketHash, subBucket, found.itemInstanceId]
+          : null;
       });
     });
   });
@@ -113,7 +124,7 @@ async function transferItem(
   console.log("profileState:", profileState);
 
   const location = findItemLocation(profileState, item.itemInstanceId) || [];
-  const [profileLocation, , subBucket] = location;
+  const [profileLocation, bucket, subBucket] = location;
 
   console.log("current item location:", location);
 
@@ -127,8 +138,90 @@ async function transferItem(
     };
   }
 
+  if (subBucket === SUBBUCKET_EQUIPPED) {
+    const itemComparitor = (rItem, r0, r1, r2) => {
+      const rItemDef =
+        definitions.DestinyInventoryItemDefinition[rItem.itemHash];
+
+      return (
+        r2 !== SUBBUCKET_EQUIPPED &&
+        !keepItems.includes(rItem.itemInstanceId) &&
+        rItemDef.classType === itemDef.classType &&
+        rItemDef.itemSubType === itemDef.itemSubType &&
+        rItemDef.inventory &&
+        rItemDef.inventory.tierTypeHash !== EXOTIC
+      );
+    };
+
+    const foundReplacementItem = profileState[profileLocation][bucket][
+      SUBBUCKET_ITEMS
+    ].find(itemComparitor);
+
+    let rItemInstanceId;
+    let replacementItemLocation;
+
+    if (foundReplacementItem) {
+      replacementItemLocation = [profileLocation, bucket, SUBBUCKET_ITEMS];
+      console.log("found replacement item on current character");
+      rItemInstanceId = foundReplacementItem.itemInstanceId;
+    } else {
+      // Needs transferring first.
+      replacementItemLocation = findItemLocation(profileState, itemComparitor);
+      const [l0, l1, l2] = replacementItemLocation;
+      const rItem = profileState[l0][l1][l2].find(itemComparitor);
+
+      rItemInstanceId = rItem.itemInstanceId;
+
+      console.log(
+        "needed to look elsewhere for replacement item",
+        replacementItemLocation
+      );
+
+      await transferItem(
+        rItem,
+        profileLocation,
+        profileState,
+        definitions,
+        { membershipType },
+        accessToken,
+        keepItems
+      );
+    }
+
+    console.log("now we need to equip", rItemInstanceId);
+
+    await destiny.equipItem(
+      {
+        itemId: rItemInstanceId,
+        characterId: profileLocation,
+        membershipType
+      },
+      accessToken
+    );
+
+    commitTransfer(profileState, rItemInstanceId, replacementItemLocation, [
+      profileLocation,
+      bucket,
+      SUBBUCKET_EQUIPPED
+    ]);
+
+    await transferItem(
+      item,
+      destination,
+      profileState,
+      definitions,
+      { membershipType },
+      accessToken,
+      keepItems
+    );
+
+    console.groupEnd();
+    return;
+  }
+
   if (destination === profileLocation) {
-    console.log(" Item is already in destination. No need to move");
+    console.log("Item is already in destination. No need to move");
+
     if (subBucket === SUBBUCKET_EQUIPPED) {
       console.log("except item is equipped. Probably want to unequip it.");
     }
@@ -242,7 +335,9 @@ function makeRoom(
       console.log("going to move item out of the way", itemToMoveOut);
 
       if (!itemToMoveOut) {
-        throw new Error("Unable to find an item to move out of the way.");
+        const err = Error("Unable to find an item to move out of the way.");
+        err.NO_ROOM = true;
+        throw err;
       }
 
       return transferItem(

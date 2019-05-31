@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from "react";
+import { groupBy } from "lodash";
 
 import { bungieUrl } from "src/lib/destinyUtils";
 import { useDefinitions } from "src/definitionsContext";
@@ -68,6 +69,7 @@ async function transferMultiple(
   accessToken
 ) {
   const allIds = items.map(i => i.itemInstanceId);
+  const errors = [];
 
   for (let index = 0; index < items.length; index++) {
     const item = items[index];
@@ -85,9 +87,16 @@ async function transferMultiple(
       console.log("%csuccess!", "font-weight: bold; color: green");
     } catch (err) {
       console.groupEnd();
-      console.log("%cerror!", "font-weight: bold; color: red", err.message);
+      console.log(
+        "%cerror!",
+        err.NO_ROOM ? "font-weight: bold;" : "font-weight: bold; color: red",
+        err.message
+      );
+      errors.push(err);
     }
   }
+
+  return errors;
 }
 
 export default function HeadingWithTransfers({
@@ -98,10 +107,16 @@ export default function HeadingWithTransfers({
   activeProfile
 }) {
   const [showDrawer, setShowDrawer] = useState(false);
+  const [partialTransfer, setPartialTransfer] = useState(false);
+  const [errorTransferring, setErrorTransferring] = useState(false);
+  const [transferSuccess, setTransferSuccess] = useState(false);
   const [isTransferring, setIsTransferring] = useState(false);
   const allDefs = useDefinitions();
 
   function transfer(destination) {
+    setPartialTransfer(false);
+    setErrorTransferring(false);
+    setTransferSuccess(false);
     setIsTransferring(true);
 
     const itemInstances = items.map(itemWrapper => itemWrapper.instance);
@@ -114,7 +129,23 @@ export default function HeadingWithTransfers({
       activeProfile,
       accessToken
     )
-      .catch(() => window.alert("error transferring items"))
+      .then(errors => {
+        const errorTypes = groupBy(errors, err =>
+          err.NO_ROOM ? "noRoom" : "other"
+        );
+
+        if (errorTypes.other) {
+          setErrorTransferring(true);
+        } else if (errorTypes.noRoom) {
+          setPartialTransfer(true);
+        } else {
+          setTransferSuccess(true);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        window.alert("error transferring items");
+      })
       .finally(() => setIsTransferring(false));
   }
 
@@ -136,6 +167,20 @@ export default function HeadingWithTransfers({
             {isTransferring && (
               <div className={s.transferring}>
                 <Icon name="spinner-third" spin /> Transferring...
+              </div>
+            )}
+
+            {partialTransfer && (
+              <div className={s.transferring}>Partially transferred items</div>
+            )}
+
+            {errorTransferring && (
+              <div className={s.transferring}>Error transferring items</div>
+            )}
+
+            {transferSuccess && (
+              <div className={s.transferring}>
+                Successfully transferred items
               </div>
             )}
           </div>
