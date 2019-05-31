@@ -67,7 +67,7 @@ export default function Item({
 
   return (
     <div
-      className={cx(s.item, isDupe && s.isDupe)}
+      className={cx(s.item, isDupe && s.isDupe, onClick && s.hasClickAction)}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       onMouseMove={onMouseMove}
