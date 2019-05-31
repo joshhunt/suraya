@@ -2,11 +2,35 @@ import React from "react";
 
 import { HELMET, ARMS, CHEST, LEGS, CLASS_ITEM } from "src/lib/destinyEnums";
 import Item from "src/components/SmallItem";
+import BungieImage from "src/components/BungieImage";
 import { useDefinitions } from "src/definitionsContext";
+
+import { Tooltip } from "react-tippy";
+import "react-tippy/dist/tippy.css";
 
 import s from "./styles.styl";
 
 const CATEGORIES = [HELMET, ARMS, CHEST, LEGS, CLASS_ITEM];
+
+function Perk({ item }) {
+  return (
+    <Tooltip
+      position="top"
+      arrow
+      html={
+        <div className={s.perkTooltipContent}>
+          <strong>{item.displayProperties.name}</strong>
+          <div className={s.perkDescription}>
+            {item.displayProperties.description}
+          </div>
+        </div>
+      }
+      // followCursor
+    >
+      <BungieImage className={s.perkIcon} src={item.displayProperties.icon} />
+    </Tooltip>
+  );
+}
 
 export default function ItemPerkGrid({
   data,
@@ -40,7 +64,7 @@ export default function ItemPerkGrid({
           return (
             <div key={perkData.perkHash} className={s.itemRow}>
               <div className={s.perkCell}>
-                {perkDef && <Item item={perkDef} />}
+                {perkDef && <Perk item={perkDef} />}
               </div>
 
               {CATEGORIES.map(category => (

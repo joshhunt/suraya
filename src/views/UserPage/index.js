@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router";
 
@@ -6,6 +6,7 @@ import { getProfile, setActiveProfile } from "src/store/profiles";
 import * as perkActions from "src/store/perkTool";
 import destinyAuth from "src/lib/destinyAuth";
 import { setAuth, getMembership } from "src/store/auth";
+import useComponentSize from "src/lib/hooks/useComponentSize";
 
 import Character from "src/components/Character";
 import PerkList from "src/components/PerkList";
@@ -15,72 +16,62 @@ import s from "./styles.styl";
 const k = ({ membershipType, membershipId }) =>
   [membershipType, membershipId].join("/");
 
-class UserPage extends Component {
-  componentDidMount() {
-    this.props.setActiveProfile(this.props.routeParams);
+function UserPage({
+  routeParams,
+  profile,
+  children,
+  selectedPerks,
+  addSelectedPerk,
+  removeSelectedPerk,
+  routeParams: { membershipId, membershipType }
+}) {
+  useEffect(() => {
+    setActiveProfile(routeParams);
 
     destinyAuth((err, result) => {
-      this.props.setAuth({ err, result });
-      this.props.getProfile(this.props.routeParams);
+      setAuth({ err, result });
+      getProfile(routeParams);
 
       if (result.isFinal && result.isAuthenticated) {
-        this.props.getMembership();
+        getMembership();
       }
     });
-  }
+  }, [routeParams, setActiveProfile, setAuth, getProfile, getMembership]);
 
-  renderName() {
-    const { profile, pKey } = this.props;
-    return profile ? profile.profile.data.userInfo.displayName : pKey;
-  }
+  const sidebarRef = useRef(null);
+  const sidebarSize = useComponentSize(sidebarRef);
 
-  viewPGCRDetails = pgcrId => {
-    this.props.toggleViewPGCRDetails(pgcrId);
-    this.props.getPGCRDetails(pgcrId);
-  };
-
-  render() {
-    const {
-      profile,
-      children,
-      selectedPerks,
-      addSelectedPerk,
-      removeSelectedPerk,
-      routeParams: { membershipId, membershipType }
-    } = this.props;
-
-    return (
-      <div className={s.root}>
-        <div className={s.side}>
-          <div className={s.characters}>
-            {profile &&
-              Object.values(profile.characters.data).map(character => (
-                <Link
-                  key={character.characterId}
-                  to={`/${membershipType}/${membershipId}/${
-                    character.characterId
-                  }/perks`}
-                >
-                  <Character character={character} />
-                </Link>
-              ))}
-          </div>
-
-          <div className={s.perks}>
-            <h2>perks</h2>
-
-            <PerkList
-              selectedPerks={selectedPerks}
-              selectPerk={addSelectedPerk}
-              deselectPerk={removeSelectedPerk}
-            />
-          </div>
+  return (
+    <div className={s.root}>
+      <div className={s.side} ref={sidebarRef}>
+        <div className={s.characters}>
+          {profile &&
+            Object.values(profile.characters.data).map(character => (
+              <Link
+                key={character.characterId}
+                to={`/${membershipType}/${membershipId}/${
+                  character.characterId
+                }/perks`}
+              >
+                <Character character={character} />
+              </Link>
+            ))}
         </div>
-        <div className={s.sidebarSpacer} />
-        <div className={s.main}>{children}</div>
+
+        <div className={s.perks}>
+          <h2>perks</h2>
+
+          <PerkList
+            selectedPerks={selectedPerks}
+            selectPerk={addSelectedPerk}
+            deselectPerk={removeSelectedPerk}
+          />
+        </div>
       </div>
-    );
-  }
+      <div className={s.sidebarSpacer} style={{ height: sidebarSize.height }} />
+      <div className={s.main}>{children}</div>
+    </div>
+  );
 }
 
 function mapStateToProps(state, ownProps) {

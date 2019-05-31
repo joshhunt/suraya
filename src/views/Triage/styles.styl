@@ -1,3 +1,6 @@
+$arrowSize = 20px
+$stepBorderRadius = 3px
+
 .lol
   content: 'lol'
 
@@ -13,13 +16,46 @@
   flex: 1
   text-decoration: none
   transition: 150ms ease-in-out all
-  box-shadow: rgba(0, 0, 0, .02) 0 1px 1px 0, rgba(0, 0, 0, .02) 0 3px 2px 0px
 
-  // clip-path: polygon(0% 0%, calc(100% - 50px) 0%, 100% 50%, calc(100% - 50px) 100%, 0% 100%, 50px 50%, 0 0 );
-  // margin-left: -50px;
-  // padding-left: 60px;
+  clip-path: "polygon(
+    0% 0%,
+    calc(100% - %s) 0%,
+    100% 50%,
+    calc(100% - %s) 100%,
+    0% 100%,
+    %s 50%,
+    0 0
+  )" % ($arrowSize $arrowSize $arrowSize)
+  margin-left: ($arrowSize * -1);
+  padding-left: ($arrowSize + 10px);
+
+  &:first-of-type
+    clip-path: "polygon(
+      0% 0%,
+      calc(100% - %s) 0%,
+      100% 50%,
+      calc(100% - %s) 100%,
+      0% 100%
+    )" % ($arrowSize $arrowSize)
+    margin-left: 10px
+    padding-left: 15px
+    border-radius: $stepBorderRadius 0 0 $stepBorderRadius
+
+  &:last-of-type
+    clip-path: "polygon(
+      0% 0%,
+      100% 0%,
+      100% 100%,
+      0% 100%,
+      %s 50%,
+      0 0
+    )" % ($arrowSize $arrowSize $arrowSize)
+    border-radius: 0 $stepBorderRadius $stepBorderRadius 0
+
+  &:hover:not(.activeStep)
+    background: lighten(#28282B, 4%)
 
 .activeStep
   composes: step
   background: lighten(#28282B, 15%)
-  box-shadow: rgba(0, 0, 0, .1) 0 1px 2px 0, rgba(0, 0, 0, .05) 0 3px 6px 2px
+  cursor: default

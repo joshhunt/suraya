@@ -1,4 +1,7 @@
 import { uniq, isArray } from "lodash";
+import { sortBy } from "lodash/fp";
+
+import perkSortOrder from "./PERK_SORT_ORDER";
 
 const INITIAL_STATE = {
   selectedPerks: [],
@@ -15,6 +18,12 @@ const asArray = item => (isArray(item) ? item : [item]);
 const add = (existing, item) => uniq([...existing, ...asArray(item)]);
 const remove = (existing, item) => existing.filter(i => i !== item);
 
+const sortPerks = sortBy(perkHash => {
+  const sortValue = perkSortOrder.indexOf(perkHash);
+
+  return sortValue === -1 ? perkHash : sortValue;
+});
+
 export default function perkToolReducer(
   state = INITIAL_STATE,
   { type, payload }
@@ -23,13 +32,13 @@ export default function perkToolReducer(
     case ADD_SELECTED_PERK:
       return {
         ...state,
-        selectedPerks: add(state.selectedPerks, payload)
+        selectedPerks: sortPerks(add(state.selectedPerks, payload))
       };
 
     case REMOVE_SELECTED_PERK:
       return {
         ...state,
-        selectedPerks: remove(state.selectedPerks, payload)
+        selectedPerks: sortPerks(remove(state.selectedPerks, payload))
       };
 
     case ADD_SELECTED_ITEM:

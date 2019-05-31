@@ -2,10 +2,11 @@ import React from "react";
 import { groupBy, sortBy } from "lodash/fp";
 import { connect } from "react-redux";
 
-import DupeItemList from "src/components/DupeItemList";
+import transferItem, { VAULT } from "src/lib/transferItem";
 import { useDefinitions } from "src/definitionsContext";
 
-import transferItem, { VAULT } from "src/lib/transferItem";
+import DupeItemList from "src/components/DupeItemList";
+import HeadingWithTransfers from "src/components/HeadingWithTransfers";
 
 import s from "./styles.styl";
 
@@ -73,7 +74,9 @@ function TransferThingy({
     <div>
       <div className={s.groups}>
         <div className={s.itemGroup}>
-          <h2>keep items</h2>
+          <HeadingWithTransfers profile={profile}>
+            Keep Items
+          </HeadingWithTransfers>
 
           <DupeItemList
             items={keepItems}

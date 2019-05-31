@@ -27,8 +27,10 @@ function App({ children, definitions }) {
           >
             joshhunt
           </a>
-          , who also made <a href="https://destinysets.com">Destiny Sets</a> and
-          the <a href="https://data.destinysets.com">Destiny Data Explorer</a>.
+          , who also makes <a href="https://destinysets.com">Destiny Sets</a>,{" "}
+          <a href="https://clan.report">clan.report</a> and the{" "}
+          <a href="https://data.destinysets.com">Destiny Data Explorer</a>.
+          <br />
           All content is owned by their respective owners, most probably Bungie.
         </div>
       </div>
