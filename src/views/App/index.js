@@ -11,7 +11,6 @@ const CLIENT_ID = process.env.REACT_APP_BUNGIE_CLIENT_ID;
 const AUTH_URL = `https://www.bungie.net/en/OAuth/Authorize?client_id=${CLIENT_ID}&response_type=code`;
 
 function App({ children, definitions }) {
-  console.log("setting definitions provider to", definitions);
   return (
     <DefinitionsContext.Provider value={definitions}>
       <div className={s.root}>

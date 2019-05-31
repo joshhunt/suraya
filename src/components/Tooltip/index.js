@@ -227,8 +227,6 @@ function mapStateToProps(state, ownProps) {
     // mapValues(g => g.matchedItems)
   )(selectedPerks);
 
-  console.log("selectedPerksData:", selectedPerksData);
-
   return {
     item: itemDef,
     selectedPerks,

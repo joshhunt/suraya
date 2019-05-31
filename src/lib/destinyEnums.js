@@ -23,6 +23,8 @@ export const MODS2 = 59;
 export const CLAN_BANNER = 58;
 export const DUMMIES = 3109687656;
 
+export const ARMOR_ITEM_TYPE = 2;
+
 export const WEAPON_MODS_ORNAMENTS = 3124752623;
 export const ARMOR_MODS_ORNAMENTS = 1742617626;
 export const ARMOR_MODS_ORNAMENTS_HUNTER = 3683250363;
@@ -34,6 +36,8 @@ export const ARMS = 46;
 export const CHEST = 47;
 export const LEGS = 48;
 export const CLASS_ITEM = 49;
+
+export const ARMOUR_CATEGORIES = [HELMET, ARMS, CHEST, LEGS, CLASS_ITEM];
 
 export const KINETIC_WEAPON = 2;
 export const ENERGY_WEAPON = 3;

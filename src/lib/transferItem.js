@@ -122,7 +122,7 @@ async function transferItem(
       itemReferenceHash: item.itemHash,
       transferToVault,
       itemId: item.itemInstanceId,
-      membershipType: 2, // TODO: get the correct membership type here
+      membershipType,
       characterId
     };
   }

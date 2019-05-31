@@ -29,10 +29,6 @@ export default function ItemComparison({
         groupByItem,
         values,
         sortBy([l => l.length * -1, l => l[0].matchedPerks.length * -1])
-
-        // sortBy(l =>
-        //   l.reduce((acc, item) => (acc || 0) + item.matchedPerks.length)
-        // )
       )(items)
     ])
   )(data);

@@ -3,7 +3,14 @@ import { flow, sortBy, filter, groupBy, uniq, map } from "lodash/fp";
 import { connect } from "react-redux";
 import { Link } from "react-router";
 
-import { HELMET, ARMS, CHEST, LEGS, CLASS_ITEM } from "src/lib/destinyEnums";
+import {
+  HELMET,
+  ARMS,
+  CHEST,
+  LEGS,
+  CLASS_ITEM,
+  ARMOR_ITEM_TYPE
+} from "src/lib/destinyEnums";
 import getItemsFromProfile from "src/lib/getItemsFromProfile";
 import { useDefinitions } from "src/definitionsContext";
 
@@ -27,6 +34,7 @@ const k = ({ membershipType, membershipId }) =>
 function View({
   mode,
   props: {
+    items,
     onTooltip,
     perksWithItems,
     addSelectedItemInstance,
@@ -65,7 +73,15 @@ function View({
     case RESULTS:
       return (
         <div>
-          <TransferThingy pKey={pKey} />
+          <TransferThingy
+            onTooltip={onTooltip}
+            pKey={pKey}
+            items={items}
+            onItemSelect={addSelectedItemInstance}
+            onItemDeselect={removeSelectedItemInstance}
+            selectedItems={selectedItems}
+            selectedItemHashes={selectedItemHashes}
+          />
           <br />
           selected items:
           <input
@@ -82,6 +98,7 @@ function View({
 
 function Triage({
   params,
+  items,
   itemsByCategory,
   perksWithItems,
   addSelectedItemInstance,
@@ -124,7 +141,7 @@ function Triage({
           <Link
             key={step}
             className={mode === step ? s.activeStep : s.step}
-            to={`/${membershipType}/${membershipId}/${characterId}/${step}`}
+            to={`/${membershipType}/${membershipId}/${characterId}/${step.toLowerCase()}`}
           >
             {index + 1}. {step}
           </Link>
@@ -134,6 +151,7 @@ function Triage({
       <View
         mode={mode}
         props={{
+          items,
           onTooltip,
           perksWithItems,
           addSelectedItemInstance,
@@ -164,7 +182,11 @@ const mapStateToProps = (state, ownProps) => {
     : getItemsFromProfile(profile)
         .filter(item => {
           const def = itemDefs && itemDefs[item.itemHash];
-          return def && def.classType === thisCharacter.classType;
+          return (
+            def &&
+            def.classType === thisCharacter.classType &&
+            def.itemType === ARMOR_ITEM_TYPE
+          );
         })
         .map(item => {
           const socketData =
