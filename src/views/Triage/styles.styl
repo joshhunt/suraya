@@ -8,11 +8,18 @@
 .step
   padding: 15px
   margin: 0 10px
-  background: #1E1E1E
+  background: #28282B
   color: white !important
   flex: 1
   text-decoration: none
+  transition: 150ms ease-in-out all
+  box-shadow: rgba(0, 0, 0, .02) 0 1px 1px 0, rgba(0, 0, 0, .02) 0 3px 2px 0px
+
+  // clip-path: polygon(0% 0%, calc(100% - 50px) 0%, 100% 50%, calc(100% - 50px) 100%, 0% 100%, 50px 50%, 0 0 );
+  // margin-left: -50px;
+  // padding-left: 60px;
 
 .activeStep
   composes: step
-  background: #303030
+  background: lighten(#28282B, 15%)
+  box-shadow: rgba(0, 0, 0, .1) 0 1px 2px 0, rgba(0, 0, 0, .05) 0 3px 6px 2px

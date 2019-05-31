@@ -1,14 +1,11 @@
-import React, { useState } from "react";
-import cx from "classnames";
+import React from "react";
 
 import { HELMET, ARMS, CHEST, LEGS, CLASS_ITEM } from "src/lib/destinyEnums";
 import Item from "src/components/SmallItem";
-import Tooltip from "src/components/Tooltip";
 import { useDefinitions } from "src/definitionsContext";
 
 import s from "./styles.styl";
 
-// const OTHER = "other";
 const CATEGORIES = [HELMET, ARMS, CHEST, LEGS, CLASS_ITEM];
 
 export default function ItemPerkGrid({

@@ -40,7 +40,6 @@ function View({
     addSelectedItemInstance,
     removeSelectedItemInstance,
     selectedItems,
-    itemsByCategory,
     selectedItemHashes,
     pKey
   }
@@ -62,7 +61,7 @@ function View({
       return (
         <ItemComparison
           onTooltip={onTooltip}
-          data={itemsByCategory}
+          data={items}
           onItemSelect={addSelectedItemInstance}
           onItemDeselect={removeSelectedItemInstance}
           selectedItems={selectedItems}
@@ -99,7 +98,6 @@ function View({
 function Triage({
   params,
   items,
-  itemsByCategory,
   perksWithItems,
   addSelectedItemInstance,
   removeSelectedItemInstance,
@@ -157,7 +155,6 @@ function Triage({
           addSelectedItemInstance,
           removeSelectedItemInstance,
           selectedItems,
-          itemsByCategory,
           selectedItemHashes,
           pKey
         }}
@@ -236,8 +233,6 @@ const mapStateToProps = (state, ownProps) => {
     )(items || [])
   }));
 
-  const itemsByCategory = flow(groupItemByCategory)(items);
-
   return {
     pKey,
     selectedPerks,
@@ -245,8 +240,7 @@ const mapStateToProps = (state, ownProps) => {
     selectedItemHashes,
     items,
     perksWithItems,
-    profile,
-    itemsByCategory
+    profile
   };
 };
 
