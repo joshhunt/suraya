@@ -11,9 +11,13 @@ export default function Character({ character }) {
   const classDef = useDefinitions("Class", character.classHash);
   const genderDef = useDefinitions("Gender", character.genderHash);
   const raceDef = useDefinitions("Race", character.raceHash);
+  const { red, green, blue, alpha } = character.emblemColor || {};
+
+  const background =
+    character.emblemColor && `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 
   return (
-    <div className={s.root}>
+    <div className={s.root} style={{ background }}>
       <BungieImage className={s.bgImage} src={character.emblemBackgroundPath} />
       <div className={s.content}>
         <div className={s.main}>

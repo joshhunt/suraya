@@ -7,17 +7,71 @@
 .heading
   flex: 1
 
-.transferDrawer
+.buttons
+  margin: 10px -10px 0 -10px
   display: flex
+
+.transferDrawer
+  position relative
   flex: 0 0 100%
-  margin: 0 -10px
+  padding: 10px
+  background: #28282B
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .1)) drop-shadow(0 3px 6px rgba(0, 0, 0, .05))
+
+  &:before
+    _triangle = 10px
+    content: ''
+    border: _triangle solid transparent
+    border-bottom-color: #28282B
+    position: absolute
+    top: _triangle * -2
+    right: 20px
+
+// .drawerTitle
+//   flex: 0 0 100%
 
 .transferCharacter
+  position relative
   display: block
-  background: none
+  background: darken(#1F2023, 40%)
   border: none
   appearance none
   font-family: inherit
   font-size: inherit
   flex: 1
   margin: 0 10px
+  padding: 0
+  overflow hidden
+  color: white
+  font-family: 'nhg display' !important
+
+.transferButtonInner
+  display: flex
+  position relative
+  z-index: 2
+
+.name
+  margin-top: 7px
+  margin-left: 5px
+  line-height: 1
+  font-size: 14px
+
+.backdrop
+  _blur = 5px
+  position: absolute
+  z-index: 1
+  top: _blur * -1
+  left: _blur * -1
+  right: _blur * -1
+  bottom: _blur * -1
+  background-position: center
+  background-size: cover
+  filter: blur(_blur)
+
+.emblem
+  display: block
+  width: 30px
+  height: 30px
+
+.vaultIcon
+  composes: emblem

@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import cx from "classnames";
 import { get } from "lodash";
-import { flow, keyBy, mapValues, map } from "lodash/fp";
+import { flow, keyBy, map } from "lodash/fp";
 import { connect } from "react-redux";
 import useWindowSize from "src/lib/hooks/useWindowSize";
 import useComponentSize from "src/lib/hooks/useComponentSize";
@@ -65,15 +65,16 @@ function Tooltip({
       )}
 
       <div className={s.perksSection}>
-        {sockets.map(perks => {
+        {sockets.map((perks, index) => {
           return (
-            <div className={s.perkGroup}>
+            <div key={index} className={s.perkGroup}>
               {perks.map(perk => {
                 const matchedItems = selectedPerksData[perk.hash];
 
                 return (
                   perk.plugItemDef && (
                     <div
+                      key={perk.hash}
                       className={cx(s.perk, {
                         [s.perkActive]: perk.isActive,
                         [s.highlightPerk]: selectedPerks.includes(
@@ -224,7 +225,6 @@ function mapStateToProps(state, ownProps) {
       };
     }),
     keyBy("perkHash")
-    // mapValues(g => g.matchedItems)
   )(selectedPerks);
 
   return {
