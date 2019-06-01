@@ -48,6 +48,7 @@ function UserPage({
   return (
     <div className={s.root}>
       <div className={s.side} ref={sidebarRef}>
+        <h1 className={s.heading}>Untitled Perk Tool</h1>
         <div className={s.characters}>
           {profile &&
             Object.values(profile.characters.data).map(character => (
