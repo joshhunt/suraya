@@ -228,6 +228,7 @@ export function getCacheableSearch(searchTerm) {
 }
 
 export function transferItem(transferRequest, accessToken) {
+  console.log("transfer item accessToken:", accessToken);
   return getDestiny(
     "/Destiny2/Actions/Items/TransferItem/",
     { accessToken },

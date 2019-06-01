@@ -87,11 +87,9 @@ async function transferMultiple(
       console.log("%csuccess!", "font-weight: bold; color: green");
     } catch (err) {
       console.groupEnd();
-      console.log(
-        "%cerror!",
-        err.NO_ROOM ? "font-weight: bold;" : "font-weight: bold; color: red",
-        err.message
-      );
+      err.NO_ROOM
+        ? console.log("%cerror!", "font-weight: bold", err.message)
+        : console.log("%cerror!", "font-weight: bold; color: red;", err);
       errors.push(err);
     }
   }

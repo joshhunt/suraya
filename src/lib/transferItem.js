@@ -98,6 +98,17 @@ function getProfileState(_profileish) {
   return profileStateMap.get(_profileish);
 }
 
+async function wrapConsoleGroup(msg, fn) {
+  console.group(msg);
+  try {
+    await fn();
+    console.groupEnd();
+  } catch (err) {
+    console.groupEnd();
+    throw err;
+  }
+}
+
 async function transferItem(
   item,
   destination,
@@ -107,179 +118,116 @@ async function transferItem(
   accessToken,
   keepItems = [] // array of itemInstanceIds of items that shouldnt be moved out of the way
 ) {
-  console.group(
+  return await wrapConsoleGroup(
     `transfering [itemHash: ${item.itemHash} id: ${
       item.itemInstanceId
-    }] to ${destination}`
+    }] to ${destination}`,
+    async () => {
+      const profileState = getProfileState(_profileish);
+
+      const itemDef = definitions.DestinyInventoryItemDefinition[item.itemHash];
+
+      if (!itemDef) {
+        throw new Error(`No item def for item hash ${item.itemHash}`);
+      }
+
+      console.log("profileState:", profileState);
+
+      const location =
+        findItemLocation(profileState, item.itemInstanceId) || [];
+      const [profileLocation, bucket, subBucket] = location;
+
+      console.log("current item location:", location);
+
+      function move(transferToVault, characterId) {
+        return {
+          itemReferenceHash: item.itemHash,
+          transferToVault,
+          itemId: item.itemInstanceId,
+          membershipType,
+          characterId
+        };
+      }
+
+      if (subBucket === SUBBUCKET_EQUIPPED) {
+        const err = new Error("Equipped items cannot be transferred.");
+        err.EQUIPPED = true;
+        throw err;
+      }
+
+      if (destination === profileLocation) {
+        console.log("Item is already in destination. No need to move");
+
+        if (subBucket === SUBBUCKET_EQUIPPED) {
+          console.log("except item is equipped. Probably want to unequip it.");
+        }
+
+        return;
+      }
+
+      let transferRequest;
+      let newLocation = [];
+
+      if (profileLocation !== VAULT) {
+        console.log(
+          "Item is on another character, need to move it to the vault"
+        );
+
+        transferRequest = move(true, profileLocation);
+        newLocation = [VAULT, VAULT_BUCKET_HASH, SUBBUCKET_ITEMS];
+      }
+
+      if (profileLocation === VAULT) {
+        console.log(
+          "Item is in the vault, just need to move it to the character"
+        );
+        transferRequest = move(false, destination);
+
+        newLocation = [
+          destination,
+          itemDef.inventory.bucketTypeHash,
+          SUBBUCKET_ITEMS
+        ];
+      }
+
+      if (transferRequest) {
+        await makeRoom(
+          profileState,
+          newLocation,
+          definitions,
+          { membershipType },
+          accessToken,
+          [...keepItems, item.itemInstanceId]
+        );
+
+        await destiny.transferItem(transferRequest, accessToken);
+
+        // Now that the item has been transferred, we need to commit that into profileState
+        console.log("Transfer was successful, now comitting");
+        commitTransfer(
+          profileState,
+          item.itemInstanceId,
+          location,
+          newLocation
+        );
+
+        if (newLocation[0] !== destination) {
+          console.log("item is not yet at it's destination, so moving again");
+          await transferItem(
+            item,
+            destination,
+            profileState,
+            definitions,
+            accessToken
+          );
+        } else {
+          console.log("item is there. hurray!");
+        }
+      }
+
+      return true;
+    }
   );
-
-  const profileState = getProfileState(_profileish);
-
-  const itemDef = definitions.DestinyInventoryItemDefinition[item.itemHash];
-
-  if (!itemDef) {
-    throw new Error(`No item def for item hash ${item.itemHash}`);
-  }
-
-  console.log("profileState:", profileState);
-
-  const location = findItemLocation(profileState, item.itemInstanceId) || [];
-  const [profileLocation, bucket, subBucket] = location;
-
-  console.log("current item location:", location);
-
-  function move(transferToVault, characterId) {
-    return {
-      itemReferenceHash: item.itemHash,
-      transferToVault,
-      itemId: item.itemInstanceId,
-      membershipType,
-      characterId
-    };
-  }
-
-  if (subBucket === SUBBUCKET_EQUIPPED) {
-    const itemComparitor = (rItem, r0, r1, r2) => {
-      const rItemDef =
-        definitions.DestinyInventoryItemDefinition[rItem.itemHash];
-
-      return (
-        r2 !== SUBBUCKET_EQUIPPED &&
-        !keepItems.includes(rItem.itemInstanceId) &&
-        rItemDef.classType === itemDef.classType &&
-        rItemDef.itemSubType === itemDef.itemSubType &&
-        rItemDef.inventory &&
-        rItemDef.inventory.tierTypeHash !== EXOTIC
-      );
-    };
-
-    const foundReplacementItem = profileState[profileLocation][bucket][
-      SUBBUCKET_ITEMS
-    ].find(itemComparitor);
-
-    let rItemInstanceId;
-    let replacementItemLocation;
-
-    if (foundReplacementItem) {
-      replacementItemLocation = [profileLocation, bucket, SUBBUCKET_ITEMS];
-      console.log("found replacement item on current character");
-      rItemInstanceId = foundReplacementItem.itemInstanceId;
-    } else {
-      // Needs transferring first.
-      replacementItemLocation = findItemLocation(profileState, itemComparitor);
-      const [l0, l1, l2] = replacementItemLocation;
-      const rItem = profileState[l0][l1][l2].find(itemComparitor);
-
-      rItemInstanceId = rItem.itemInstanceId;
-
-      console.log(
-        "needed to look elsewhere for replacement item",
-        replacementItemLocation
-      );
-
-      await transferItem(
-        rItem,
-        profileLocation,
-        profileState,
-        definitions,
-        { membershipType },
-        accessToken,
-        keepItems
-      );
-    }
-
-    console.log("now we need to equip", rItemInstanceId);
-
-    await destiny.equipItem(
-      {
-        itemId: rItemInstanceId,
-        characterId: profileLocation,
-        membershipType
-      },
-      accessToken
-    );
-
-    commitTransfer(profileState, rItemInstanceId, replacementItemLocation, [
-      profileLocation,
-      bucket,
-      SUBBUCKET_EQUIPPED
-    ]);
-
-    await transferItem(
-      item,
-      destination,
-      profileState,
-      definitions,
-      { membershipType },
-      accessToken,
-      keepItems
-    );
-
-    console.groupEnd();
-    return;
-  }
-
-  if (destination === profileLocation) {
-    console.log("Item is already in destination. No need to move");
-
-    if (subBucket === SUBBUCKET_EQUIPPED) {
-      console.log("except item is equipped. Probably want to unequip it.");
-    }
-    console.groupEnd();
-
-    return;
-  }
-
-  let transferRequest;
-  let newLocation = [];
-
-  if (profileLocation !== VAULT) {
-    console.log("Item is on another character, need to move it to the vault");
-
-    transferRequest = move(true, profileLocation);
-    newLocation = [VAULT, VAULT_BUCKET_HASH, SUBBUCKET_ITEMS];
-  }
-
-  if (profileLocation === VAULT) {
-    console.log("Item is in the vault, just need to move it to the character");
-    transferRequest = move(false, destination);
-
-    newLocation = [
-      destination,
-      itemDef.inventory.bucketTypeHash,
-      SUBBUCKET_ITEMS
-    ];
-  }
-
-  if (transferRequest) {
-    await makeRoom(profileState, newLocation, definitions, accessToken, [
-      ...keepItems,
-      item.itemInstanceId
-    ]);
-
-    console.log("Initiating transfer API", transferRequest);
-    await destiny.transferItem(transferRequest, accessToken);
-
-    // Now that the item has been transferred, we need to commit that into profileState
-    console.log("Transfer was successful, now comitting");
-    commitTransfer(profileState, item.itemInstanceId, location, newLocation);
-
-    if (newLocation[0] !== destination) {
-      console.log("item is not yet at it's destination, so moving again");
-      await transferItem(
-        item,
-        destination,
-        profileState,
-        definitions,
-        accessToken
-      );
-    } else {
-      console.log("item is there. hurray!");
-    }
-  }
-
-  console.groupEnd();
-  return true;
 }
 
 export default transferItem;
@@ -311,6 +259,7 @@ function makeRoom(
   profileState,
   [profileLocation, bucketHash], // the new location
   definitions, // defs
+  { membershipType },
   accessToken,
   keepItems // array of items to leave where they are
 ) {
@@ -345,6 +294,7 @@ function makeRoom(
         VAULT,
         profileState,
         definitions,
+        { membershipType },
         accessToken
       );
     }

@@ -93,7 +93,9 @@ function Tooltip({
                               name="check"
                             />
                             <Icon className={s.timesIcon} name="times" light />
-                            <div>{matchedItems.selected}</div>
+                            <div className={s.number}>
+                              {matchedItems.selected}
+                            </div>
                           </span>
                         )}
 
@@ -105,7 +107,7 @@ function Tooltip({
                               solid
                             />
                             <Icon className={s.timesIcon} name="times" light />
-                            <div>{matchedItems.total}</div>
+                            <div className={s.number}>{matchedItems.total}</div>
                           </span>
                         )}
                       </div>
