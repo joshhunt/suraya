@@ -71,23 +71,15 @@ function View({
 
     case RESULTS:
       return (
-        <div>
-          <TransferThingy
-            onTooltip={onTooltip}
-            pKey={pKey}
-            items={items}
-            onItemSelect={addSelectedItemInstance}
-            onItemDeselect={removeSelectedItemInstance}
-            selectedItems={selectedItems}
-            selectedItemHashes={selectedItemHashes}
-          />
-          <br />
-          selected items:
-          <input
-            value={selectedItems.map(id => `id:${id}`).join(" or ")}
-            readOnly
-          />
-        </div>
+        <TransferThingy
+          onTooltip={onTooltip}
+          pKey={pKey}
+          items={items}
+          onItemSelect={addSelectedItemInstance}
+          onItemDeselect={removeSelectedItemInstance}
+          selectedItems={selectedItems}
+          selectedItemHashes={selectedItemHashes}
+        />
       );
 
     default:

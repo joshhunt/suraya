@@ -46,6 +46,16 @@ function TransferThingy({
             onItemSelect={onItemSelect}
             selectedItemHashes={selectedItemHashes}
           />
+
+          <div className={s.searchFilter}>
+            DIM filter:{" "}
+            <input
+              value={keepItems
+                .map(item => `id:${item.instance.itemInstanceId}`)
+                .join(" or ")}
+              readOnly
+            />
+          </div>
         </div>
 
         <div className={s.itemGroup}>
@@ -67,6 +77,16 @@ function TransferThingy({
             onItemSelect={onItemSelect}
             selectedItemHashes={selectedItemHashes}
           />
+
+          <div className={s.searchFilter}>
+            DIM filter:{" "}
+            <input
+              value={junkItems
+                .map(item => `id:${item.instance.itemInstanceId}`)
+                .join(" or ")}
+              readOnly
+            />
+          </div>
         </div>
       </div>
     </div>
