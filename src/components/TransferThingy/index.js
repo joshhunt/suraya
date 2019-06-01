@@ -47,15 +47,23 @@ function TransferThingy({
             selectedItemHashes={selectedItemHashes}
           />
 
-          <div className={s.searchFilter}>
-            DIM filter:{" "}
-            <input
-              value={keepItems
-                .map(item => `id:${item.instance.itemInstanceId}`)
-                .join(" or ")}
-              readOnly
-            />
-          </div>
+          {keepItems.length === 0 && (
+            <p className={s.helpText}>
+              <em>Nothing yet. Click items to tag them.</em>
+            </p>
+          )}
+
+          {keepItems.length !== 0 && (
+            <div className={s.searchFilter}>
+              DIM filter:{" "}
+              <input
+                value={keepItems
+                  .map(item => `id:${item.instance.itemInstanceId}`)
+                  .join(" or ")}
+                readOnly
+              />
+            </div>
+          )}
         </div>
 
         <div className={s.itemGroup}>
@@ -78,15 +86,17 @@ function TransferThingy({
             selectedItemHashes={selectedItemHashes}
           />
 
-          <div className={s.searchFilter}>
-            DIM filter:{" "}
-            <input
-              value={junkItems
-                .map(item => `id:${item.instance.itemInstanceId}`)
-                .join(" or ")}
-              readOnly
-            />
-          </div>
+          {junkItems.length !== 0 && (
+            <div className={s.searchFilter}>
+              DIM filter:{" "}
+              <input
+                value={junkItems
+                  .map(item => `id:${item.instance.itemInstanceId}`)
+                  .join(" or ")}
+                readOnly
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

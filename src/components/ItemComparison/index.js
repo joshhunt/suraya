@@ -32,7 +32,7 @@ export default function ItemComparison({
 
   return (
     <div>
-      <button onClick={autoMark}>auto mark all non-dupes</button>
+      {/* <button onClick={autoMark}>auto mark all non-dupes</button> */}
 
       <DupeItemList
         items={data}

@@ -65,58 +65,56 @@ function Tooltip({
       )}
 
       <div className={s.perksSection}>
-        {sockets.map((perks, index) => {
-          return (
-            <div key={index} className={s.perkGroup}>
-              {perks.map(perk => {
-                const matchedItems = selectedPerksData[perk.hash];
+        {sockets &&
+          sockets.map((perks, index) => {
+            return (
+              <div key={index} className={s.perkGroup}>
+                {perks.map(perk => {
+                  const matchedItems = selectedPerksData[perk.hash];
 
-                return (
-                  perk.plugItemDef && (
-                    <div
-                      key={perk.hash}
-                      className={cx(s.perk, {
-                        [s.perkActive]: perk.isActive,
-                        [s.highlightPerk]: selectedPerks.includes(
-                          perk.plugItemDef.hash
-                        )
-                      })}
-                    >
-                      <BungieImage
-                        className={s.perkIcon}
-                        src={perk.plugItemDef.displayProperties.icon}
-                      />
+                  return (
+                    perk.plugItemDef && (
+                      <div key={perk.hash} className={cx(s.perk)}>
+                        <BungieImage
+                          className={cx(s.perkIcon, !perk.isActive && s.dim)}
+                          src={perk.plugItemDef.displayProperties.icon}
+                        />
 
-                      <span className={s.perkName}>
-                        {perk.plugItemDef.displayProperties.name}
-                      </span>
-
-                      {matchedItems && matchedItems.selected > 0 && (
-                        <span className={s.selectedItems}>
-                          <Icon className={s.selectedPerkStar} name="check" />
-                          {" ⨉ "}
-                          {matchedItems.selected}
+                        <span
+                          className={cx(s.perkName, !perk.isActive && s.dim)}
+                        >
+                          {perk.plugItemDef.displayProperties.name}
                         </span>
-                      )}
 
-                      {matchedItems && matchedItems.total > 0 && (
-                        <span className={s.matchedItems}>
-                          <Icon
-                            className={s.selectedPerkStar}
-                            name="star"
-                            solid
-                          />
-                          {" ⨉ "}
-                          {matchedItems.total}
-                        </span>
-                      )}
-                    </div>
-                  )
-                );
-              })}
-            </div>
-          );
-        })}
+                        {matchedItems && matchedItems.selected > 0 && (
+                          <span className={s.selectedItems}>
+                            <Icon
+                              className={s.selectedPerkCheck}
+                              name="check"
+                            />
+                            <Icon className={s.timesIcon} name="times" light />
+                            <div>{matchedItems.selected}</div>
+                          </span>
+                        )}
+
+                        {matchedItems && matchedItems.total > 0 && (
+                          <span className={s.matchedItems}>
+                            <Icon
+                              className={s.selectedPerkStar}
+                              name="star"
+                              solid
+                            />
+                            <Icon className={s.timesIcon} name="times" light />
+                            <div>{matchedItems.total}</div>
+                          </span>
+                        )}
+                      </div>
+                    )
+                  );
+                })}
+              </div>
+            );
+          })}
       </div>
     </div>
   );

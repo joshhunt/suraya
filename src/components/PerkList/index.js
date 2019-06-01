@@ -87,6 +87,12 @@ export default function PerkList({ selectPerk, deselectPerk, selectedPerks }) {
           )
         );
       })}
+
+      {selectedPerks.length === 0 && (
+        <p className={s.helpText}>
+          <em>Choose some perks to find items matching them.</em>
+        </p>
+      )}
     </div>
   );
 }

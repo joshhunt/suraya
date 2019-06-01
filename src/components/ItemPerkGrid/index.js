@@ -25,7 +25,6 @@ function Perk({ item }) {
           </div>
         </div>
       }
-      // followCursor
     >
       <BungieImage className={s.perkIcon} src={item.displayProperties.icon} />
     </Tooltip>
@@ -100,6 +99,14 @@ export default function ItemPerkGrid({
           );
         })}
       </div>
+
+      {data.length === 0 && (
+        <p className={s.helpText}>
+          <em>
+            Nothing yet. Select some favorite perks to see items matching them.
+          </em>
+        </p>
+      )}
     </div>
   );
 }

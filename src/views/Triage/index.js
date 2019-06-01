@@ -133,7 +133,7 @@ function Triage({
             className={mode === step ? s.activeStep : s.step}
             to={`/${membershipType}/${membershipId}/${characterId}/${step.toLowerCase()}`}
           >
-            {index + 1}. {step}
+            {step}
           </Link>
         ))}
       </div>

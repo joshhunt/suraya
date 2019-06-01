@@ -27,7 +27,7 @@ function UserPage({
   setAuth,
   getProfile,
   getMembership,
-  routeParams: { membershipId, membershipType }
+  params: { membershipId, membershipType, characterId }
 }) {
   useEffect(() => {
     setActiveProfile(routeParams);
@@ -52,6 +52,11 @@ function UserPage({
           {profile &&
             Object.values(profile.characters.data).map(character => (
               <Link
+                className={
+                  characterId === character.characterId
+                    ? s.activeCharacterLink
+                    : s.characterLink
+                }
                 key={character.characterId}
                 to={`/${membershipType}/${membershipId}/${
                   character.characterId
@@ -63,7 +68,7 @@ function UserPage({
         </div>
 
         <div className={s.perks}>
-          <h2>perks</h2>
+          <h3>Perks</h3>
 
           <PerkList
             selectedPerks={selectedPerks}
@@ -73,7 +78,21 @@ function UserPage({
         </div>
       </div>
       <div className={s.sidebarSpacer} style={{ height: sidebarSize.height }} />
-      <div className={s.main}>{children}</div>
+
+      <div className={s.main}>
+        {profile ? (
+          children || (
+            <div>
+              <span role="img" aria-label="pointing left">
+                👈
+              </span>{" "}
+              select a class to begin
+            </div>
+          )
+        ) : (
+          <div>Loading...</div>
+        )}
+      </div>
     </div>
   );
 }

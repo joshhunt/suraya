@@ -74,6 +74,7 @@ export default function DupeItemList({
                     return (
                       itemDef && (
                         <Item
+                          matchedPerksThreshold={1}
                           onTooltipEnter={ev => onTooltip(ev, itemWrapper)}
                           onTooltipLeave={() => onTooltip(null)}
                           onClick={() =>

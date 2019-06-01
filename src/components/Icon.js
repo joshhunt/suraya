@@ -8,6 +8,7 @@ library.add(
   require("@fortawesome/fontawesome-free-brands/faWindows"),
 
   require("@fortawesome/pro-light-svg-icons/faBook").faBook,
+  require("@fortawesome/pro-light-svg-icons/faTimes").faTimes,
   require("@fortawesome/pro-light-svg-icons/faThLarge").faThLarge,
   require("@fortawesome/pro-light-svg-icons/faShoppingBasket").faShoppingBasket,
 

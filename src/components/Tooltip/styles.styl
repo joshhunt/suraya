@@ -74,15 +74,16 @@
 .perk
   display: flex
   align-items: center
-  opacity: .5
+  // opacity: .5
   font-size: 13px
   letter-spacing: .2px
 
   & + &
     margin-top: 2px
 
-.perkActive
-  opacity: 1
+.dim
+.perkIcon.dim
+  opacity: .45
 
 .perkIcon
   width: 20px
@@ -95,20 +96,10 @@
 
 .selectedPerkStar
   margin-right: 0
+  font-size: 10px
 
-// .highlightPerk
-//   background: #90CCC8
-//   color: #202124
-//   padding: 2px 5px
-//   border-radius: 3px
-//   margin: 3px 0
-
-//   &:last-of-type
-//     margin-bottom: 0
-
-//   .selectedPerkStar
-//     display: none
-
+.selectedPerkCheck
+  margin-right: 0
 
 .matchedItems
   background: #90CCC8
@@ -117,6 +108,8 @@
   font-size: .9em
   padding: 2px
   border-radius: 3px
+  display: flex
+  align-items: center
 
   & + &
     margin-left: .5em
@@ -124,3 +117,9 @@
 .selectedItems
   composes: matchedItems
   background: #74CC51
+
+.timesIcon
+  display: inline-block
+  margin: 0 3px
+  font-size: 10px
+  margin-top: 2px
