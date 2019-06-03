@@ -7,8 +7,6 @@ import { useDefinitions } from "src/definitionsContext";
 
 import s from "./styles.styl";
 
-import matcher from "micromatch";
-
 function Perk({ definition, className, ...props }) {
   return (
     <div className={cx(s.perk, className)} {...props}>
