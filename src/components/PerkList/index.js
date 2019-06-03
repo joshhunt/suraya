@@ -32,7 +32,7 @@ const useItemFilter = (itemDefs, rawSearchTerm) =>
         searchTerm.length > 1 &&
         itemDef.itemCategoryHashes &&
         itemDef.itemCategoryHashes.includes(59) &&
-        matcher.isMatch(searchTerm, itemDef.displayProperties.name.toLowerCase()) // is mod
+        matcher.isMatch(itemDef.displayProperties.name.toLowerCase(), searchTerm) // is mod
       );
     });
   }, [itemDefs, rawSearchTerm]);
