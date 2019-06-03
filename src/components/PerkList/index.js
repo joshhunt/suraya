@@ -7,7 +7,7 @@ import { useDefinitions } from "src/definitionsContext";
 
 import s from "./styles.styl";
 
-import Matcher from "matcher";
+import matcher from "matcher";
 
 function Perk({ definition, className, ...props }) {
   return (
@@ -34,7 +34,7 @@ const useItemFilter = (itemDefs, rawSearchTerm) =>
         searchTerm.length > 1 &&
         itemDef.itemCategoryHashes &&
         itemDef.itemCategoryHashes.includes(59) &&
-        Matcher.isMatch(searchTerm, itemDef.displayProperties.name.toLowerCase()) // is mod
+        matcher.isMatch(searchTerm, itemDef.displayProperties.name.toLowerCase()) // is mod
       );
     });
   }, [itemDefs, rawSearchTerm]);
