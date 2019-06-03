@@ -7,7 +7,7 @@ import { useDefinitions } from "src/definitionsContext";
 
 import s from "./styles.styl";
 
-import matcher from "matcher";
+import matcher from "micromatch";
 
 function Perk({ definition, className, ...props }) {
   return (
