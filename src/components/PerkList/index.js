@@ -7,6 +7,8 @@ import { useDefinitions } from "src/definitionsContext";
 
 import s from "./styles.styl";
 
+const matcher = require("matcher");
+
 function Perk({ definition, className, ...props }) {
   return (
     <div className={cx(s.perk, className)} {...props}>
