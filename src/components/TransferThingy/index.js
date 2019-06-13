@@ -1,8 +1,7 @@
 import React from "react";
-import { groupBy, sortBy } from "lodash/fp";
+import { groupBy } from "lodash/fp";
 import { connect } from "react-redux";
 
-import transferItem, { VAULT } from "src/lib/transferItem";
 import { useDefinitions } from "src/definitionsContext";
 
 import DupeItemList from "src/components/DupeItemList";

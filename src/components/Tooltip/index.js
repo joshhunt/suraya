@@ -57,7 +57,7 @@ function Tooltip({
         <div className={s.rarity}>{item.inventory.tierTypeName}</div>
       </div>
 
-      {itemInstance.primaryStat && (
+      {itemInstance && itemInstance.primaryStat && (
         <div className={s.powerSection}>
           <div className={s.power}>{itemInstance.primaryStat.value}</div>
           <div>Defense</div> {/* translate from definitions */}
@@ -143,7 +143,7 @@ function doesSocketsHavePerk(sockets, perkHash) {
 }
 
 function mapStateToProps(state, ownProps) {
-  const { itemInstanceId } = ownProps;
+  const { itemInstanceId, itemHash } = ownProps;
   const { selectedPerks, selectedItems } = state.perkTool;
 
   const pKey =
@@ -159,7 +159,7 @@ function mapStateToProps(state, ownProps) {
   const itemInstance = profile.itemComponents.instances.data[itemInstanceId];
 
   const itemDefs = state.definitions.DestinyInventoryItemDefinition || {};
-  const itemDef = itemDefs[itemSummary.itemHash];
+  const itemDef = itemDefs[itemHash || itemSummary.itemHash];
 
   const ARMOR_PERKS = 2518356196;
   const rawSockets = get(

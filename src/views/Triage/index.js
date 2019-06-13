@@ -18,6 +18,7 @@ import * as perkActions from "src/store/perkTool";
 import ItemPerkGrid from "src/components/ItemPerkGrid";
 import ItemComparison from "src/components/ItemComparison";
 import TransferThingy from "src/components/TransferThingy";
+import InventoryDebug from "src/components/InventoryDebug";
 import Tooltip from "src/components/Tooltip";
 
 import s from "./styles.styl";
@@ -25,6 +26,7 @@ import s from "./styles.styl";
 export const PERKS = "Perks";
 export const DUPLICATES = "Duplicates";
 export const RESULTS = "Results";
+export const DEBUG = "Debug";
 
 const STEPS = [PERKS, DUPLICATES, RESULTS];
 
@@ -82,6 +84,9 @@ function View({
         />
       );
 
+    case DEBUG:
+      return <InventoryDebug pKey={pKey} onTooltip={onTooltip} />;
+
     default:
       return <div>idk what the mode is lol: {mode}</div>;
   }
@@ -106,10 +111,12 @@ function Triage({
     activeTooltip &&
     activeTooltip.itemWrapper &&
     itemDefs[activeTooltip.itemWrapper.instance.itemHash];
-
+  console.log("tooltip stuff", { tooltipItemDef, activeTooltip });
   function onTooltip(ev, itemWrapper) {
     const x = ev && ev.clientX + 5;
     const y = ev && ev.clientY + 5;
+
+    console.log("onTooltip", { ev, itemWrapper });
     ev && itemWrapper
       ? setActiveTooltip({ itemWrapper, x, y })
       : setActiveTooltip(null);

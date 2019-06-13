@@ -26,9 +26,9 @@ export default function ItemComparison({
   //   onItemSelect(singles);
   // }
 
-  function autoMark() {
-    window.alert("need to sort this out");
-  }
+  // function autoMark() {
+  //   window.alert("need to sort this out");
+  // }
 
   return (
     <div>

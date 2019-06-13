@@ -9,11 +9,11 @@ const SUBBUCKET_ITEMS = "items";
 const SUBBUCKET_EQUIPPED = "equipped";
 const VAULT_BUCKET_HASH = 138197802;
 
-const EXOTIC = 2759499571;
+// const EXOTIC = 2759499571;
 
 const IS_PROFILE_STATE = Symbol("is profileState");
 
-function buildProfileStateMap(profile) {
+export function buildProfileStateMap(profile) {
   const profileState = {
     [IS_PROFILE_STATE]: true,
     [VAULT]: {
@@ -135,7 +135,7 @@ async function transferItem(
 
       const location =
         findItemLocation(profileState, item.itemInstanceId) || [];
-      const [profileLocation, bucket, subBucket] = location;
+      const [profileLocation, , subBucket] = location;
 
       console.log("current item location:", location);
 

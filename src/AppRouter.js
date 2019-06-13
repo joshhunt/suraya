@@ -8,7 +8,7 @@ import store from "./store";
 import App from "./views/App";
 import Home from "./views/Home";
 import UserPage from "./views/UserPage";
-import Triage, { PERKS, DUPLICATES, RESULTS } from "./views/Triage";
+import Triage, { PERKS, DUPLICATES, RESULTS, DEBUG } from "./views/Triage";
 
 export default class AppRouter extends Component {
   render() {
@@ -32,6 +32,11 @@ export default class AppRouter extends Component {
               <Route
                 path=":characterId/results"
                 mode={RESULTS}
+                component={Triage}
+              />
+              <Route
+                path=":characterId/debug"
+                mode={DEBUG}
                 component={Triage}
               />
             </Route>
