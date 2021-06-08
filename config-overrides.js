@@ -5,6 +5,7 @@ const { getLoader, injectBabelPlugin } = require("react-app-rewired");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const WebpackVisualizerPlugin = require("webpack-visualizer-plugin");
 const { UnusedFilesWebpackPlugin } = require("unused-files-webpack-plugin");
+const matcher = require("matcher");
 
 module.exports = function override(config, env) {
   config = injectBabelPlugin("lodash", config);

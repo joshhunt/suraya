@@ -7,6 +7,8 @@ import { useDefinitions } from "src/definitionsContext";
 
 import s from "./styles.styl";
 
+const matcher = require("matcher");
+
 function Perk({ definition, className, ...props }) {
   return (
     <div className={cx(s.perk, className)} {...props}>
@@ -32,7 +34,7 @@ const useItemFilter = (itemDefs, rawSearchTerm) =>
         searchTerm.length > 1 &&
         itemDef.itemCategoryHashes &&
         itemDef.itemCategoryHashes.includes(59) &&
-        itemDef.displayProperties.name.toLowerCase().includes(searchTerm) // is mod
+        matcher.isMatch(itemDef.displayProperties.name.toLowerCase(), searchTerm) // is mod
       );
     });
   }, [itemDefs, rawSearchTerm]);
